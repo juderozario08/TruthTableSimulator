@@ -17,7 +17,8 @@ const (
 
 func ValidateExpressionAndParseTerms(expr string, terms *Expression) bool {
 	st := stack.New()
-	if expr[0] == '(' {
+	switch {
+	case expr[0] == '(':
 		st.Push(expr[0])
 		str := make([]byte, 0)
 		for i := 1; i < len(expr); i++ {
@@ -34,7 +35,7 @@ func ValidateExpressionAndParseTerms(expr string, terms *Expression) bool {
 				str = append(str, expr[i])
 			}
 		}
-	} else {
+	default:
 	}
 	return false
 }
