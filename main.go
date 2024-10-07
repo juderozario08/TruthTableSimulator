@@ -4,18 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	expr := scanner.Text()
-	terms := Expression{
-		Term: make([]any, 0),
-		Type: NEITHER,
+	expr := strings.ToLower(scanner.Text())
+	tokens, err := GenerateTokens(expr)
+	if err != nil {
+		fmt.Println("\033[91mNot a valid expression\033[97m")
+		return
 	}
-	if !ValidateExpressionAndParseTerms(expr, &terms) {
-		fmt.Println("\033[91mYou did not give me a proper Boolean Expression")
-		fmt.Print("\033[97m")
-	}
+	fmt.Println(tokens)
 }
