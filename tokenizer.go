@@ -2,8 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"unicode"
+	"slices"
 
 	"github.com/golang-collections/collections/stack"
 )
@@ -22,70 +21,51 @@ const (
 	TokenNot
 )
 
-func inputDotsForAnd(expr string) string {
-	prev := expr[0]
-	result := ""
-	result += string(prev)
-	for i := 1; i < len(expr); i++ {
-		if expr[i] == ' ' {
-			continue
-		}
-		if unicode.IsLetter(rune(expr[i])) {
-			if unicode.IsLetter(rune(prev)) {
-				result += "."
-			}
-		}
-		result += string(expr[i])
-		prev = expr[i]
-	}
-	return result
-}
-
-func FillTokensAndStates(tokens *[]Token, states *States, expr string) error {
-	expr = inputDotsForAnd(expr)
+func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, err error) {
 	st := stack.New()
 	for i := 0; i < len(expr); i++ {
 		switch c := expr[i]; c {
 		case '(':
 			st.Push(c)
-			*tokens = append(*tokens, Token{
+			tokens = append(tokens, Token{
 				Value: c,
 				Type:  TokenBracketOpen,
 			})
 		case ')':
 			if st.Len() == 0 {
-				return errors.New("ERROR: Invalid Syntax")
+				return nil, nil, errors.New("ERROR: Invalid Syntax")
 			}
 			st.Pop()
-			*tokens = append(*tokens, Token{
+			tokens = append(tokens, Token{
 				Value: c,
 				Type:  TokenBracketClose,
 			})
 		case '+':
-			*tokens = append(*tokens, Token{
+			tokens = append(tokens, Token{
 				Value: c,
 				Type:  TokenOr,
 			})
 		case '\'':
-			*tokens = append(*tokens, Token{
+			tokens = append(tokens, Token{
 				Value: c,
 				Type:  TokenNot,
 			})
 		case '.':
-			*tokens = append(*tokens, Token{
+			tokens = append(tokens, Token{
 				Value: c,
 				Type:  TokenAnd,
 			})
 		default:
 			if c != ' ' {
-				*tokens = append(*tokens, Token{
+				tokens = append(tokens, Token{
 					Value: c,
 					Type:  TokenBool,
 				})
-				(*states)[c] = nil
+				if !slices.Contains(stateNames, State(c)) {
+					stateNames = append(stateNames, State(c))
+				}
 			}
 		}
 	}
-	fmt.Println(tokens)
-	return nil
+	return tokens, stateNames, nil
 }
