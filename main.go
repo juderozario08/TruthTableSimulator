@@ -17,11 +17,8 @@ func main() {
 		fmt.Println("\033[91mNot a valid expression\033[97m")
 		return
 	}
-	states := make(States)
-	for _, state := range stateNames {
-		states[state] = make([]Binary, 0)
-	}
-	GenerateTable(&tokens, &states, stateNames)
+	states := GenerateTable(tokens, stateNames)
+	PrintTable(2<<(len(stateNames)-1), stateNames, states)
 }
 
 func normalizeExpression(expr string) string {

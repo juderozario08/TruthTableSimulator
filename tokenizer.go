@@ -23,6 +23,7 @@ const (
 
 func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, err error) {
 	st := stack.New()
+	stateNames = make([]State, 0)
 	for i := 0; i < len(expr); i++ {
 		switch c := expr[i]; c {
 		case '(':
@@ -66,6 +67,10 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 				}
 			}
 		}
+	}
+	numOfStates := len(stateNames)
+	for i := 0; i < numOfStates; i++ {
+		stateNames = append(stateNames, stateNames[i]+"'")
 	}
 	return tokens, stateNames, nil
 }
