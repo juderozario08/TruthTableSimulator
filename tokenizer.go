@@ -22,6 +22,7 @@ const (
 )
 
 func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, err error) {
+	// TODO: Use a counter instead of a stack later on cause it is more memory efficient
 	st := stack.New()
 	stateNames = make([]State, 0)
 	for i := 0; i < len(expr); i++ {

@@ -17,7 +17,9 @@ func main() {
 		fmt.Println("\033[91mNot a valid expression\033[97m")
 		return
 	}
+	terms, isPos := ParseTerms(&tokens)
 	states := PopulatesStateBins(tokens, stateNames)
+	states = CalculateTermBinaries(terms, isPos, states)
 	PrintTable(stateNames, &states)
 }
 
