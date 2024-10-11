@@ -17,8 +17,8 @@ func main() {
 		fmt.Println("\033[91mNot a valid expression\033[97m")
 		return
 	}
-	states := GenerateTable(tokens, stateNames)
-	PrintTable(2<<(len(stateNames)-1), stateNames, states)
+	states := PopulatesStateBins(tokens, stateNames)
+	PrintTable(stateNames, &states)
 }
 
 func normalizeExpression(expr string) string {

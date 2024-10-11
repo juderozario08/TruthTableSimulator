@@ -5,9 +5,10 @@ import (
 	"strconv"
 )
 
-func GenerateTable(tokens []Token, stateNames []State) (states States) {
+func PopulatesStateBins(tokens []Token, stateNames []State) (states States) {
 	numberOfStates := len(stateNames)
 	numberOfRows := 2 << (numberOfStates/2 - 1)
+	fmt.Println(stateNames)
 	states = make(States)
 	binaries := getAllBinaryRows(numberOfRows, numberOfStates)
 	for row, bins := range binaries {
@@ -27,8 +28,8 @@ func getAllBinaryRows(numberOfRows int, numberOfStates int) [][]Binary {
 	for i := 0; i < numberOfRows; i++ {
 		bin := strconv.FormatInt(int64(i), 2) // Get binary
 		remainingBits := ""
-		if len(bin) < numberOfStates {
-			for j := 0; j < numberOfStates-len(bin); j++ {
+		if len(bin) < numberOfStates/2 {
+			for j := 0; j < (numberOfStates/2)-len(bin); j++ {
 				remainingBits += "0"
 			}
 		}
@@ -38,8 +39,10 @@ func getAllBinaryRows(numberOfRows int, numberOfStates int) [][]Binary {
 			switch c {
 			case '0':
 				bins[k] = 0
+				bins[k+(numberOfStates/2)] = 1
 			case '1':
 				bins[k] = 1
+				bins[k+(numberOfStates/2)] = 0
 			}
 		}
 		binaryRows = append(binaryRows, bins)
@@ -47,33 +50,21 @@ func getAllBinaryRows(numberOfRows int, numberOfStates int) [][]Binary {
 	return binaryRows
 }
 
-func PrintTable(numberOfRows int, stateNames []State, states States) {
-	numberOfStates := len(stateNames)
-	fmt.Print("-")
-	for i := 0; i < numberOfStates; i++ {
-		fmt.Print("---")
-	}
-	fmt.Print("-\n")
-	fmt.Print("|")
-	for _, state := range stateNames {
-		fmt.Print(" " + state + " ")
-	}
-	fmt.Print("|\n")
-	fmt.Print("-")
-	for i := 0; i < numberOfStates; i++ {
-		fmt.Print("---")
-	}
-	fmt.Print("-\n")
-	for i := 0; i < numberOfRows; i++ {
-		fmt.Print("|")
-		for _, v := range states {
-			fmt.Printf(" %v ", v[i])
+func PrintTable(stateNames []State, states *States) {
+	numberOfRows := 2 << (len(stateNames)>>1 - 1)
+	fmt.Println(numberOfRows)
+	for _, v := range stateNames {
+		if len(v) == 2 {
+			fmt.Printf("%v  ", v)
+		} else {
+			fmt.Printf("%v   ", v)
 		}
-		fmt.Print("|\n")
 	}
-	fmt.Print("-")
-	for i := 0; i < numberOfStates; i++ {
-		fmt.Print("---")
+	fmt.Println()
+	for row := 0; row < numberOfRows; row++ {
+		for _, state := range stateNames {
+			fmt.Printf("%v   ", (*states)[state][row])
+		}
+		fmt.Println()
 	}
-	fmt.Print("-\n")
 }

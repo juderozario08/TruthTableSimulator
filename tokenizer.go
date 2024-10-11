@@ -68,6 +68,9 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 			}
 		}
 	}
+	if st.Len() != 0 {
+		return nil, nil, errors.New("ERROR: Invalid Syntax")
+	}
 	numOfStates := len(stateNames)
 	for i := 0; i < numOfStates; i++ {
 		stateNames = append(stateNames, stateNames[i]+"'")
