@@ -10,11 +10,11 @@ import (
 
 type Token struct {
 	Value string
-	Type  int
+	Type  uint8
 }
 
 const (
-	TokenBool = iota
+	TokenBool uint8 = iota
 	TokenNotBool
 	TokenOr
 	TokenAnd

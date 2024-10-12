@@ -5,14 +5,14 @@ import (
 	"testing"
 )
 
-type Test struct {
+type TokenizerTest struct {
 	ExpectedToken      []Token
 	ExpectedStateNames []State
 	Question           string
 }
 
 func TestTokenizerAndStateNames(t *testing.T) {
-	tests := []Test{
+	tests := []TokenizerTest{
 		{
 			ExpectedToken: []Token{
 				{Type: TokenBracketOpen, Value: "("},
