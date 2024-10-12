@@ -5,6 +5,17 @@ import (
 )
 
 func CalculateTermBinaries(terms []Term, isPos bool, states States) States {
+	numOfRows := 2 << (len(states)/2 - 1)
+	for i, term := range terms {
+		if isPos {
+			for _, c := range term {
+				finalBinary := make([]Binary, numOfRows)
+				if c.Type != TokenAnd {
+				}
+			}
+		} else {
+		}
+	}
 	return states
 }
 

@@ -8,17 +8,17 @@ import (
 )
 
 type Token struct {
-	Value byte
+	Value string
 	Type  int
 }
 
 const (
 	TokenBool = iota
+	TokenNotBool
 	TokenOr
 	TokenAnd
 	TokenBracketOpen
 	TokenBracketClose
-	TokenNot
 )
 
 func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, err error) {
@@ -30,7 +30,7 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 		case '(':
 			st.Push(c)
 			tokens = append(tokens, Token{
-				Value: c,
+				Value: string(c),
 				Type:  TokenBracketOpen,
 			})
 		case ')':
@@ -39,28 +39,26 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 			}
 			st.Pop()
 			tokens = append(tokens, Token{
-				Value: c,
+				Value: string(c),
 				Type:  TokenBracketClose,
 			})
 		case '+':
 			tokens = append(tokens, Token{
-				Value: c,
+				Value: string(c),
 				Type:  TokenOr,
 			})
 		case '\'':
-			tokens = append(tokens, Token{
-				Value: c,
-				Type:  TokenNot,
-			})
+			tokens[len(tokens)-1].Value += string(c)
+			tokens[len(tokens)-1].Type += TokenNotBool
 		case '.':
 			tokens = append(tokens, Token{
-				Value: c,
+				Value: string(c),
 				Type:  TokenAnd,
 			})
 		default:
 			if c != ' ' {
 				tokens = append(tokens, Token{
-					Value: c,
+					Value: string(c),
 					Type:  TokenBool,
 				})
 				if !slices.Contains(stateNames, State(c)) {
