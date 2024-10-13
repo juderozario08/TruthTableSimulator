@@ -5,23 +5,45 @@ import (
 )
 
 func CalculateTermBinaries(terms []Term, isPos bool, states States) States {
-	/* numOfRows := 2 << (len(states)/2 - 1)
-	for i, term := range terms {
+	numOfRows := 2 << (len(states)/2 - 1)
+	for _, term := range terms {
+		termString := ""
+		finalBinary := make([]Binary, numOfRows)
 		if isPos {
-			for _, c := range term {
-				finalBinary := make([]Binary, numOfRows)
+			for j, c := range term {
+				termString += c.Value
 				if c.Type != TokenAnd {
+					for k, b := range states[State(c.Value)] {
+						if j == 0 {
+							finalBinary[k] |= b
+						} else {
+							finalBinary[k] &= b
+						}
+					}
 				}
 			}
 		} else {
+			for j, c := range term {
+				termString += c.Value
+				if c.Type != TokenOr && c.Type != TokenBracketClose && c.Type != TokenBracketOpen {
+					for k, b := range states[State(c.Value)] {
+						if j == 0 {
+							finalBinary[k] |= b
+						} else {
+							finalBinary[k] |= b
+						}
+					}
+				}
+			}
 		}
-	} */
+		states[State(termString)] = finalBinary
+	}
 	return states
 }
 
-func PrintTable(stateNames []State, states *States) {
-	numberOfRows := 2 << (len(stateNames)>>1 - 1)
-	for _, v := range stateNames {
+func PrintTable(stateNames *[]State, states *States) {
+	numberOfRows := 2 << (len(*stateNames)>>1 - 1)
+	for _, v := range *stateNames {
 		if len(v) == 2 {
 			fmt.Printf("%v  ", v)
 		} else {
@@ -30,7 +52,7 @@ func PrintTable(stateNames []State, states *States) {
 	}
 	fmt.Println()
 	for row := 0; row < numberOfRows; row++ {
-		for _, state := range stateNames {
+		for _, state := range *stateNames {
 			fmt.Printf("%v   ", (*states)[state][row])
 		}
 		fmt.Println()
