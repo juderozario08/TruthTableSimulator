@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 	"strings"
 )
 
@@ -20,16 +19,7 @@ func main() {
 	}
 	terms, isPos := ParseTerms(&tokens)
 	states := PopulatesStateBins(tokens, stateNames)
-	states = CalculateTermBinaries(terms, isPos, states)
-	stateStrings := make([]string, 0)
-	for k := range states {
-		stateStrings = append(stateStrings, string(k))
-	}
-	// TODO: Build custom string sorting algorithm
-	sort.Strings(stateStrings)
-	for _, st := range stateStrings {
-		fmt.Println(st, states[State(st)])
-	}
-	// Come up with a better way to print the table
-	// PrintTable(&stateNames, &states)
+	states, termStrings := CalculateTermBinaries(terms, isPos, states)
+	states = CalculateFinalTable(&termStrings, isPos, states)
+	PrintTable(&stateNames, &termStrings, &states)
 }

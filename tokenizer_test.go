@@ -31,6 +31,22 @@ func TestTokenizerAndStateNames(t *testing.T) {
 		},
 		{
 			ExpectedToken: []Token{
+				{Type: TokenBracketOpen, Value: "("},
+				{Type: TokenBool, Value: "a"},
+				{Type: TokenOr, Value: "+"},
+				{Type: TokenBool, Value: "c"},
+				{Type: TokenBracketClose, Value: ")"},
+				{Type: TokenBracketOpen, Value: "("},
+				{Type: TokenBool, Value: "b"},
+				{Type: TokenOr, Value: "+"},
+				{Type: TokenNotBool, Value: "f'"},
+				{Type: TokenBracketClose, Value: ")"},
+			},
+			ExpectedStateNames: []State{"a", "b", "c", "f", "a'", "b'", "c'", "f'"},
+			Question:           "(a + c)(b + f')", // SOP test
+		},
+		{
+			ExpectedToken: []Token{
 				{Type: TokenBool, Value: "a"},
 				{Type: TokenAnd, Value: "."},
 				{Type: TokenBool, Value: "b"},

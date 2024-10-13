@@ -4,8 +4,9 @@ import (
 	"fmt"
 )
 
-func CalculateTermBinaries(terms []Term, isPos bool, states States) States {
+func CalculateTermBinaries(terms []Term, isPos bool, states States) (sts States, termString []State) {
 	numOfRows := 2 << (len(states)/2 - 1)
+	termStrings := make([]State, 0)
 	for _, term := range terms {
 		termString := ""
 		finalBinary := make([]Binary, numOfRows)
@@ -36,29 +37,73 @@ func CalculateTermBinaries(terms []Term, isPos bool, states States) States {
 				}
 			}
 		}
+		termStrings = append(termStrings, State(termString))
 		states[State(termString)] = finalBinary
 	}
-	return states
+	return states, termStrings
 }
 
-func PrintTable(stateNames *[]State, states *States) {
+func PrintTable(stateNames *[]State, termStrings *[]State, states *States) {
 	numberOfRows := 2 << (len(*stateNames)>>1 - 1)
 	for _, v := range *stateNames {
-		if len(v) == 2 {
-			fmt.Printf("%v  ", v)
-		} else {
-			fmt.Printf("%v   ", v)
-		}
+		fmt.Printf(" %v ", v)
+	}
+	for _, v := range *termStrings {
+		fmt.Printf(" %v ", v)
 	}
 	fmt.Println()
 	for row := 0; row < numberOfRows; row++ {
 		for _, state := range *stateNames {
-			fmt.Printf("%v   ", (*states)[state][row])
+			st := (*states)[state]
+			bin := st[row]
+			fmt.Printf(" %v ", bin)
+			printSpaces(len(state) - 1)
+		}
+		for _, term := range *termStrings {
+			st := (*states)[term]
+			bin := st[row]
+			fmt.Printf(" %v ", bin)
+			printSpaces(len(term) - 1)
 		}
 		fmt.Println()
 	}
 }
 
-func CalculateFinalTable(terms []Term, isPos bool, states States) States {
+func printSpaces(number int) {
+	for i := 0; i < number; i++ {
+		fmt.Print(" ")
+	}
+}
+
+func CalculateFinalTable(termStrings *[]State, isPos bool, states States) States {
+	finalTable := make([]Binary, 0)
+	finalString := State("")
+	for i, term := range *termStrings {
+		if isPos {
+			for j, b := range states[term] {
+				if i == 0 {
+					finalTable = append(finalTable, b)
+				} else {
+					finalTable[j] |= b
+				}
+			}
+			if i != 0 {
+				finalString += "+" + term
+			} else {
+				finalString += term
+			}
+		} else {
+			for j, b := range states[term] {
+				if i == 0 {
+					finalTable = append(finalTable, b)
+				} else {
+					finalTable[j] &= b
+				}
+			}
+			finalString += term
+		}
+	}
+	states[finalString] = finalTable
+	*termStrings = append(*termStrings, finalString)
 	return states
 }

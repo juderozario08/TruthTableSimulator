@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"slices"
+	"sort"
 	"unicode"
 
 	"github.com/golang-collections/collections/stack"
@@ -25,7 +26,7 @@ const (
 func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, err error) {
 	expr = normalizeExpression(expr)
 	st := stack.New()
-	stateNames = make([]State, 0)
+	stNames := make([]string, 0)
 	if expr[0] == '+' || expr[len(expr)-1] == '+' {
 		return nil, nil, errors.New("ERROR: Invalid Syntax")
 	}
@@ -78,14 +79,18 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 					Value: string(c),
 					Type:  TokenBool,
 				})
-				if !slices.Contains(stateNames, State(c)) {
-					stateNames = append(stateNames, State(c))
+				if !slices.Contains(stNames, string(c)) {
+					stNames = append(stNames, string(c))
 				}
 			}
 		}
 	}
 	if st.Len() != 0 {
 		return nil, nil, errors.New("ERROR: Invalid Syntax")
+	}
+	sort.Strings(stNames)
+	for _, v := range stNames {
+		stateNames = append(stateNames, State(v))
 	}
 	numOfStates := len(stateNames)
 	for i := 0; i < numOfStates; i++ {
