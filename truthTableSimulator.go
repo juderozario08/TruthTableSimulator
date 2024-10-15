@@ -107,3 +107,16 @@ func CalculateFinalTable(termStrings *[]State, isPos bool, states States) States
 	*termStrings = append(*termStrings, finalString)
 	return states
 }
+
+func CreateTruthTable(expr string) (States, error) {
+	tokens, stateNames, err := GenerateTokensAndStates(expr)
+	if err != nil {
+		return nil, err
+	}
+	terms, isPos := ParseTerms(&tokens)
+	states := PopulatesStateBins(tokens, stateNames)
+	states, termStrings := CalculateTermBinaries(terms, isPos, states)
+	states = CalculateFinalTable(&termStrings, isPos, states)
+	PrintTable(&stateNames, &termStrings, &states)
+	return states, nil
+}

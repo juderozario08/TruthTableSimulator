@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"slices"
 	"testing"
 )
@@ -37,9 +38,9 @@ func TestTruthTable(t *testing.T) {
 				State("b'"):         []Binary{1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0},
 				State("c'"):         []Binary{1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0},
 				State("d'"):         []Binary{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-				State("a'.b.c"):     []Binary{},
-				State("c.d"):        []Binary{},
-				State("a'.b.c+c.d"): []Binary{},
+				State("a'.b.c"):     []Binary{0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+				State("c.d"):        []Binary{0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1},
+				State("a'.b.c+c.d"): []Binary{0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1},
 			},
 			Question: "a'.b.c + c.d",
 		},
@@ -53,27 +54,31 @@ func TestTruthTable(t *testing.T) {
 				State("b'"):            []Binary{1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0},
 				State("c'"):            []Binary{1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0},
 				State("d'"):            []Binary{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-				State("(a'+b+c)"):      []Binary{},
-				State("(c+d)"):         []Binary{},
-				State("(a'+b+c)(c+d)"): []Binary{},
+				State("(a'+b+c)"):      []Binary{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+				State("(c+d)"):         []Binary{0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1},
+				State("(a'+b+c)(c+d)"): []Binary{0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1},
 			},
 			Question: "(a' + b + c)(c + d)",
 		},
 		{
 			ExpectedStates: States{
-				State("a"):                      []Binary{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1},
-				State("b"):                      []Binary{0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
-				State("c"):                      []Binary{0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1},
-				State("d"):                      []Binary{0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
-				State("a'"):                     []Binary{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-				State("b'"):                     []Binary{1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0},
-				State("c'"):                     []Binary{1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0},
-				State("d'"):                     []Binary{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
-				State("(a+b)"):                  []Binary{},
-				State("(b+d)"):                  []Binary{},
-				State("(c+b)"):                  []Binary{},
-				State("(a'+b')"):                []Binary{},
-				State("(a+b)(d+b)(c+b)(a'+b')"): []Binary{},
+				State("a"):  []Binary{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1},
+				State("a'"): []Binary{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+
+				State("b"):  []Binary{0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
+				State("b'"): []Binary{1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0},
+
+				State("c"):  []Binary{0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1},
+				State("c'"): []Binary{1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0},
+
+				State("d"):  []Binary{0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1},
+				State("d'"): []Binary{1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0},
+
+				State("(a+b)"):                  []Binary{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+				State("(d+b)"):                  []Binary{0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1},
+				State("(c+b)"):                  []Binary{0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1},
+				State("(a'+b')"):                []Binary{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0},
+				State("(a+b)(d+b)(c+b)(a'+b')"): []Binary{0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0},
 			},
 			Question: "(a+b)(d+b)(c+b)(a'+b')",
 		},
@@ -88,7 +93,16 @@ func TestTruthTable(t *testing.T) {
 		)
 		states = CalculateFinalTable(&termStrings, isPos, states)
 		if !mapEqual(states, test.ExpectedStates) {
-			t.Errorf("Expected: %v\nGot: %v", test.ExpectedStates, states)
+			map1 := "\n"
+			map2 := "\n"
+			for k, v := range test.ExpectedStates {
+				map1 += string(k) + " " + fmt.Sprint(v) + "\n"
+				map2 += string(k) + " " + fmt.Sprint(states[k]) + "\n"
+				if !slices.Equal(v, states[k]) {
+					t.Errorf("Expected %v\nGot %v", v, states[k])
+				}
+			}
+			t.Errorf("Expected: %v\nGot: %v", map1, map2)
 		}
 	}
 }
