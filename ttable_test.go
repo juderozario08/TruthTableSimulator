@@ -84,14 +84,7 @@ func TestTruthTable(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		tokens, stateNames, _ := GenerateTokensAndStates(test.Question)
-		terms, isPos := ParseTerms(&tokens)
-		states, termStrings := CalculateTermBinaries(
-			terms,
-			isPos,
-			PopulatesStateBins(tokens, stateNames),
-		)
-		states = CalculateFinalTable(&termStrings, isPos, states)
+		states, _ := CreateTruthTable(test.Question, NoPrint)
 		if !mapEqual(states, test.ExpectedStates) {
 			map1 := "\n"
 			map2 := "\n"

@@ -1,10 +1,11 @@
 run:
 	go build
-	./main
+	mv main simulator
+	./simulator
 test:
 	go test -run TestTokenizerAndStateNames
 	go test -run TestParser
 	go test -run TestTruthTable
 	go test -run TestLogicalEquivalenceCalculator
 clean:
-	rm main
+	rm simulator
