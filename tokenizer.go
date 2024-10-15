@@ -75,6 +75,9 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 			})
 		default:
 			if c != ' ' {
+				if !unicode.IsLetter(rune(c)) {
+					return nil, nil, errors.New("ERROR: Invalid Syntax")
+				}
 				tokens = append(tokens, Token{
 					Value: string(c),
 					Type:  TokenBool,

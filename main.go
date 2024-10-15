@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+const (
+	NoPrint uint8 = iota
+	Print
+)
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("Please select one from the following:\n1. Truth Table Simulator\n2. Logical Equivalence Calculator\n")
@@ -25,7 +30,7 @@ func main() {
 		fmt.Println("Enter an SOP(maxterms) or POS(minterms) function: ")
 		scanner.Scan()
 		expr := strings.ToLower(scanner.Text())
-		CreateTruthTable(expr)
+		CreateTruthTable(expr, Print)
 	} else {
 		fmt.Println("Enter the 1st SOP(maxterms) or POS(minterms) function: ")
 		scanner.Scan()
@@ -33,7 +38,7 @@ func main() {
 		fmt.Println("Enter the 2nd SOP(maxterms) or POS(minterms) function: ")
 		scanner.Scan()
 		expr2 := strings.ToLower(scanner.Text())
-		result, err := LogicalEquivalenceCalculator(expr1, expr2)
+		result, err := LogicalEquivalenceCalculator(expr1, expr2, Print)
 		if err != nil {
 			fmt.Printf("\033[91m%v\033[97m\n", err.Error())
 			return

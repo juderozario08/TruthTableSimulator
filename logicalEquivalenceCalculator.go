@@ -5,13 +5,15 @@ import (
 	"slices"
 )
 
-func LogicalEquivalenceCalculator(expr1 string, expr2 string) (result bool, err error) {
-	states1, err := CreateTruthTable(expr1)
+func LogicalEquivalenceCalculator(expr1 string, expr2 string, flag uint8) (result bool, err error) {
+	states1, err := CreateTruthTable(expr1, flag)
 	if err != nil {
 		return false, err
 	}
-	fmt.Println()
-	states2, err := CreateTruthTable(expr2)
+	if flag == Print {
+		fmt.Println()
+	}
+	states2, err := CreateTruthTable(expr2, flag)
 	if err != nil {
 		return false, err
 	}
@@ -37,6 +39,12 @@ func LogicalEquivalenceCalculator(expr1 string, expr2 string) (result bool, err 
 	}
 	if len(states1[exp1]) == len(states2[exp2]) && !slices.Equal(states1[exp1], states2[exp2]) {
 		return false, nil
+	}
+	val1, exists1 := states1[exp2]
+	val2, exists2 := states2[exp1]
+	if (exists1 && slices.Equal(val1, states1[exp1])) ||
+		(exists2 && slices.Equal(val2, states2[exp2])) {
+		return true, nil
 	}
 
 	var minBins []Binary
