@@ -74,7 +74,7 @@ func termEqual(t1 []Term, t2 []Term) bool {
 	if len(t1) != len(t2) {
 		return false
 	}
-	for i := 0; i < len(t1); i++ {
+	for i := range t1 {
 		if !slices.Equal(t1[i], t2[i]) {
 			return false
 		}

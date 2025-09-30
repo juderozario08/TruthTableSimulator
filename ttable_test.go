@@ -89,8 +89,8 @@ func TestTruthTable(t *testing.T) {
 			map1 := "\n"
 			map2 := "\n"
 			for k, v := range test.ExpectedStates {
-				map1 += string(k) + " " + fmt.Sprint(v) + "\n"
-				map2 += string(k) + " " + fmt.Sprint(states[k]) + "\n"
+				map1 += string(k) + " " + fmt.Sprint(string(v)) + "\n"
+				map2 += string(k) + " " + fmt.Sprint(string(states[k])) + "\n"
 				if !slices.Equal(v, states[k]) {
 					t.Errorf("Expected %v\nGot %v", v, states[k])
 				}

@@ -52,7 +52,7 @@ func PrintTable(stateNames *[]State, termStrings *[]State, states *States) {
 		fmt.Printf(" %v ", v)
 	}
 	fmt.Println()
-	for row := 0; row < numberOfRows; row++ {
+	for row := range numberOfRows {
 		for _, state := range *stateNames {
 			st := (*states)[state]
 			bin := st[row]
@@ -70,7 +70,7 @@ func PrintTable(stateNames *[]State, termStrings *[]State, states *States) {
 }
 
 func printSpaces(number int) {
-	for i := 0; i < number; i++ {
+	for range number {
 		fmt.Print(" ")
 	}
 }

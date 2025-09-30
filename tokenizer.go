@@ -96,7 +96,7 @@ func GenerateTokensAndStates(expr string) (tokens []Token, stateNames []State, e
 		stateNames = append(stateNames, State(v))
 	}
 	numOfStates := len(stateNames)
-	for i := 0; i < numOfStates; i++ {
+	for i := range numOfStates {
 		stateNames = append(stateNames, stateNames[i]+"'")
 	}
 	return tokens, stateNames, nil
