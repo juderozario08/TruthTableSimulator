@@ -59,7 +59,7 @@ func LogicalEquivalenceCalculator(expr1 string, expr2 string, flag uint8) (resul
 
 	for i := 0; i < len(minBins); i++ {
 		offset := len(maxBins) / len(minBins)
-		for j := 0; j < offset; j++ {
+		for j := range offset {
 			if minBins[i] != maxBins[(i*offset)+j] {
 				return false, nil
 			}

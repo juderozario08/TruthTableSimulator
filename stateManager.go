@@ -28,7 +28,7 @@ func PopulatesStateBins(tokens []Token, stateNames []State) (states States) {
 
 func getAllBinaryRows(numberOfRows int, numberOfStates int) [][]Binary {
 	binaryRows := make([][]Binary, 0)
-	for i := 0; i < numberOfRows; i++ {
+	for i := range numberOfRows {
 		bin := strconv.FormatInt(int64(i), 2) // Get binary
 		remainingBits := ""
 		if len(bin) < numberOfStates/2 {
