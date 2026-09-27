@@ -16,8 +16,10 @@ const (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print("Please select one from the following:\n1. Truth Table Simulator\n2. Logical Equivalence Calculator\n")
-	scanner.Scan()
-	choice, err := strconv.Atoi(scanner.Text())
+	if !scanner.Scan() {
+		return
+	}
+	choice, err := strconv.Atoi(strings.TrimSpace(scanner.Text()))
 	if err != nil {
 		fmt.Printf("\033[91m%v\033[97m\n", err.Error())
 		return
@@ -27,17 +29,27 @@ func main() {
 		return
 	}
 	if choice == 1 {
-		fmt.Println("Enter an SOP(maxterms) or POS(minterms) function: ")
-		scanner.Scan()
-		expr := strings.ToLower(scanner.Text())
-		CreateTruthTable(expr, Print)
+		fmt.Println("Enter an SOP (minterms) or POS (maxterms) function: ")
+		if !scanner.Scan() {
+			return
+		}
+		expr := strings.ToLower(strings.TrimSpace(scanner.Text()))
+		_, err := CreateTruthTable(expr, Print)
+		if err != nil {
+			fmt.Printf("\033[91m%v\033[97m\n", err.Error())
+			return
+		}
 	} else {
-		fmt.Println("Enter the 1st SOP(maxterms) or POS(minterms) function: ")
-		scanner.Scan()
-		expr1 := strings.ToLower(scanner.Text())
-		fmt.Println("Enter the 2nd SOP(maxterms) or POS(minterms) function: ")
-		scanner.Scan()
-		expr2 := strings.ToLower(scanner.Text())
+		fmt.Println("Enter the 1st SOP (minterms) or POS (maxterms) function: ")
+		if !scanner.Scan() {
+			return
+		}
+		expr1 := strings.ToLower(strings.TrimSpace(scanner.Text()))
+		fmt.Println("Enter the 2nd SOP (minterms) or POS (maxterms) function: ")
+		if !scanner.Scan() {
+			return
+		}
+		expr2 := strings.ToLower(strings.TrimSpace(scanner.Text()))
 		result, err := LogicalEquivalenceCalculator(expr1, expr2, Print)
 		if err != nil {
 			fmt.Printf("\033[91m%v\033[97m\n", err.Error())

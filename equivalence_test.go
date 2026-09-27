@@ -45,9 +45,33 @@ func TestLogicalEquivalenceCalculator(t *testing.T) {
 			Expression1:    "x'yz'+x'yz+xyz'+xyz",
 			Expression2:    "y'",
 		},
+		// Tests for distinct variables (previously produced false positives)
+		{
+			ExpectedResult: false,
+			Expression1:    "x",
+			Expression2:    "y",
+		},
+		{
+			ExpectedResult: false,
+			Expression1:    "x + y",
+			Expression2:    "y + z",
+		},
+		{
+			ExpectedResult: false,
+			Expression1:    "x",
+			Expression2:    "x'",
+		},
+		{
+			ExpectedResult: false,
+			Expression1:    "x",
+			Expression2:    "x + y",
+		},
 	}
 	for _, test := range tests {
-		result, _ := LogicalEquivalenceCalculator(test.Expression1, test.Expression2, NoPrint)
+		result, err := LogicalEquivalenceCalculator(test.Expression1, test.Expression2, NoPrint)
+		if err != nil {
+			t.Errorf("Unexpected error for %v vs %v: %v", test.Expression1, test.Expression2, err)
+		}
 		if test.ExpectedResult != result {
 			t.Errorf(
 				"\nExpression1: %v\nExpression2: %v\nExpected: %v\nGot: %v\n",
@@ -56,6 +80,21 @@ func TestLogicalEquivalenceCalculator(t *testing.T) {
 				test.ExpectedResult,
 				result,
 			)
+		}
+	}
+}
+
+func TestLogicalEquivalenceCalculatorErrors(t *testing.T) {
+	errorTests := [][2]string{
+		{"", "x"},
+		{"x", ""},
+		{"a++b", "a"},
+		{"a", "a'b("},
+	}
+	for _, pair := range errorTests {
+		_, err := LogicalEquivalenceCalculator(pair[0], pair[1], NoPrint)
+		if err == nil {
+			t.Errorf("Expected error for expressions %q and %q, got nil", pair[0], pair[1])
 		}
 	}
 }

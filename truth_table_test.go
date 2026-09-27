@@ -84,7 +84,10 @@ func TestTruthTable(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		states, _ := CreateTruthTable(test.Question, NoPrint)
+		states, err := CreateTruthTable(test.Question, NoPrint)
+		if err != nil {
+			t.Errorf("Unexpected error for %q: %v", test.Question, err)
+		}
 		if !mapEqual(states, test.ExpectedStates) {
 			map1 := "\n"
 			map2 := "\n"
@@ -96,6 +99,16 @@ func TestTruthTable(t *testing.T) {
 				}
 			}
 			t.Errorf("Expected: %v\nGot: %v", map1, map2)
+		}
+	}
+}
+
+func TestTruthTableErrors(t *testing.T) {
+	invalidInputs := []string{"", "   ", "a++b", "(a+b", "a)b"}
+	for _, input := range invalidInputs {
+		_, err := CreateTruthTable(input, NoPrint)
+		if err == nil {
+			t.Errorf("Expected error for invalid input %q, got nil", input)
 		}
 	}
 }

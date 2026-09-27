@@ -77,14 +77,44 @@ func TestTokenizerAndStateNames(t *testing.T) {
 			ExpectedStateNames: nil,
 			Question:           "abc(c + b + e)", // POS SOP err test
 		},
+		{
+			ExpectedToken:      nil,
+			ExpectedStateNames: nil,
+			Question:           "", // empty test
+		},
+		{
+			ExpectedToken:      nil,
+			ExpectedStateNames: nil,
+			Question:           "   ", // whitespace test
+		},
+		{
+			ExpectedToken:      nil,
+			ExpectedStateNames: nil,
+			Question:           "a''", // double negation err test
+		},
+		{
+			ExpectedToken:      nil,
+			ExpectedStateNames: nil,
+			Question:           "a++b", // double plus err test
+		},
+		{
+			ExpectedToken:      nil,
+			ExpectedStateNames: nil,
+			Question:           "+ab", // leading plus err test
+		},
+		{
+			ExpectedToken:      nil,
+			ExpectedStateNames: nil,
+			Question:           "ab+", // trailing plus err test
+		},
 	}
 	for _, test := range tests {
 		tokens, stateNames, _ := GenerateTokensAndStates(test.Question)
 		if !slices.Equal(tokens, test.ExpectedToken) {
-			t.Errorf("Expected: %v,\nGot: %v\n", test.ExpectedToken, tokens)
+			t.Errorf("Question: %q\nExpected: %v,\nGot: %v\n", test.Question, test.ExpectedToken, tokens)
 		}
 		if !slices.Equal(stateNames, test.ExpectedStateNames) {
-			t.Errorf("Expected: %v,\nGot: %v\n", test.ExpectedStateNames, stateNames)
+			t.Errorf("Question: %q\nExpected: %v,\nGot: %v\n", test.Question, test.ExpectedStateNames, stateNames)
 		}
 	}
 }

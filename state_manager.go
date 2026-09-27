@@ -1,7 +1,5 @@
 package main
 
-import "strconv"
-
 type (
 	Binary uint8 // i.e. 0 or 1
 	State  string
@@ -11,13 +9,15 @@ type (
 
 func PopulatesStateBins(tokens []Token, stateNames []State) (states States) {
 	numberOfStates := len(stateNames)
-	numberOfRows := 2 << (numberOfStates/2 - 1)
-	states = make(States)
+	if numberOfStates == 0 {
+		return make(States)
+	}
+	numberOfRows := 1 << (numberOfStates / 2)
+	states = make(States, numberOfStates)
 	binaries := getAllBinaryRows(numberOfRows, numberOfStates)
 	for row, bins := range binaries {
 		for col, bin := range bins {
-			_, exists := states[stateNames[col]]
-			if !exists {
+			if _, exists := states[stateNames[col]]; !exists {
 				states[stateNames[col]] = make([]Binary, numberOfRows)
 			}
 			states[stateNames[col]][row] = bin
@@ -27,28 +27,16 @@ func PopulatesStateBins(tokens []Token, stateNames []State) (states States) {
 }
 
 func getAllBinaryRows(numberOfRows int, numberOfStates int) [][]Binary {
-	binaryRows := make([][]Binary, 0)
-	for i := range numberOfRows {
-		bin := strconv.FormatInt(int64(i), 2) // Get binary
-		remainingBits := ""
-		if len(bin) < numberOfStates/2 {
-			for j := 0; j < (numberOfStates/2)-len(bin); j++ {
-				remainingBits += "0"
-			}
-		}
-		bin = remainingBits + bin
+	numVars := numberOfStates / 2
+	binaryRows := make([][]Binary, numberOfRows)
+	for i := 0; i < numberOfRows; i++ {
 		bins := make([]Binary, numberOfStates)
-		for k, c := range bin {
-			switch c {
-			case '0':
-				bins[k] = 0
-				bins[k+(numberOfStates/2)] = 1
-			case '1':
-				bins[k] = 1
-				bins[k+(numberOfStates/2)] = 0
-			}
+		for k := 0; k < numVars; k++ {
+			bit := Binary((i >> (numVars - 1 - k)) & 1)
+			bins[k] = bit
+			bins[k+numVars] = bit ^ 1
 		}
-		binaryRows = append(binaryRows, bins)
+		binaryRows[i] = bins
 	}
 	return binaryRows
 }
